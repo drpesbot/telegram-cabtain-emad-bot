@@ -15,13 +15,13 @@ class TelegramWebhook(BaseModel):
     update_id: int
     message: Optional[dict]
 
-def start(update, context):
-    update.message.reply_text(
+async def start(update, context):
+    await update.message.reply_text(
         "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
     )
 
-def echo(update, context):
-    update.message.reply_text(
+async def echo(update, context):
+    await update.message.reply_text(
         "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
     )
 
