@@ -1,40 +1,37 @@
 import os
+from typing import Optional
 
 from fastapi import FastAPI, Request
+from pydantic import BaseModel
 
 from telegram import Update, Bot
-from telegram.ext import Application, MessageHandler, filters, CommandHandler
 
 TOKEN = os.environ.get("TOKEN")  # التوكن هيتحدد في Vercel
 
 app = FastAPI()
 
-async def start(update: Update, context):
-    await update.message.reply_text(
-        "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
-    )
-
-async def echo(update: Update, context):
-    await update.message.reply_text(
-        "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
-    )
-
 @app.post("/webhook")
 async def webhook(request: Request):
-    # Get the JSON data from the request body
-    webhook_data = await request.json()
+    bot = Bot(token=TOKEN)
+    update = Update.de_json(await request.json(), bot)
 
-    # Initialize the Application
-    application = Application.builder().token(TOKEN).build()
+    if update.message:
+        chat_id = update.message.chat_id
+        text = update.message.text
 
-    # Add handlers
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+        # الرسالة المطلوبة للبوت الجديد
+        response_message = "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
 
-    # Process the update
-    update = Update.de_json(webhook_data, application.bot)
-    await application.process_update(update)
-
+        if text == "/start":
+            await bot.send_message(
+                chat_id=chat_id,
+                text=response_message
+            )
+        else:
+            await bot.send_message(
+                chat_id=chat_id,
+                text=response_message
+            )
     return {"message": "ok"}
 
 @app.get("/")
