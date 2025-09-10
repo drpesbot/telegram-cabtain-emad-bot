@@ -1,8 +1,6 @@
 import os
-from typing import Optional
 
 from fastapi import FastAPI, Request
-from pydantic import BaseModel
 
 from telegram import Update, Bot
 from telegram.ext import Application, MessageHandler, filters, CommandHandler
@@ -10,10 +8,6 @@ from telegram.ext import Application, MessageHandler, filters, CommandHandler
 TOKEN = os.environ.get("TOKEN")  # التوكن هيتحدد في Vercel
 
 app = FastAPI()
-
-class TelegramWebhook(BaseModel):
-    update_id: int
-    message: Optional[dict]
 
 async def start(update: Update, context):
     await update.message.reply_text(
