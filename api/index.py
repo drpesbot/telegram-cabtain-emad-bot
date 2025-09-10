@@ -15,24 +15,32 @@ class TelegramWebhook(BaseModel):
     update_id: int
     message: Optional[dict]
 
-async def start(update, context):
+async def start(update: Update, context):
     await update.message.reply_text(
         "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
     )
 
-async def echo(update, context):
+async def echo(update: Update, context):
     await update.message.reply_text(
         "اضغط على الرابط الذى بالاسفل للوصول إلى ستور كابتن عماد \nهذا هو الرابط تفضل بالضغط عليه ⬇️⬇️\nhttps://t.me/pes224"
     )
 
 @app.post("/webhook")
-async def webhook(webhook_data: dict):
+async def webhook(request: Request):
+    # Get the JSON data from the request body
+    webhook_data = await request.json()
+
+    # Initialize the Application
     application = Application.builder().token(TOKEN).build()
+
+    # Add handlers
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
+    # Process the update
     update = Update.de_json(webhook_data, application.bot)
     await application.process_update(update)
+
     return {"message": "ok"}
 
 @app.get("/")
