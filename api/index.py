@@ -27,12 +27,11 @@ async def echo(update, context):
 
 @app.post("/webhook")
 async def webhook(webhook_data: dict):
-    bot = Bot(token=TOKEN)
     application = Application.builder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-    update = Update.de_json(webhook_data, bot)
+    update = Update.de_json(webhook_data, application.bot)
     await application.process_update(update)
     return {"message": "ok"}
 
